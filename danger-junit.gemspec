@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Junit::VERSION
   spec.authors       = ['Orta Therox']
   spec.email         = ['orta.therox@gmail.com']
-  spec.description   = 'A short description of danger-junit.'
-  spec.summary       = 'A longer description of danger-junit.'
-  spec.homepage      = 'https://github.com/Orta Therox/danger-junit'
+  spec.description   = 'Get automatic inline test reporting for JUnit-conforming XML files.'
+  spec.summary       = 'Get automatic inline test reporting for JUnit-conforming XML files'
+  spec.homepage      = 'https://github.com/orta/danger-junit'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($INPUT_RECORD_SEPARATOR)

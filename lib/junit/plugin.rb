@@ -1,9 +1,12 @@
 module Danger
-  # Report, or inspect any JUnit xml formatted test suite report.
+  # Report, or inspect any JUnit XML formatted test suite report.
   #
-  # Testing frameworks have standardized on the JUnit xml format for
+  # Testing frameworks have standardized on the JUnit XML format for
   # reporting results, this means that projects using Rspec, Jasmine, Mocha,
-  # XCTest and many more can all use the same Danger error reporting. Perfect.
+  # XCTest and more - can all use the same Danger error reporting. Perfect.
+  #
+  # You can see some examples on [this page from Circle CI](https://circleci.com/docs/test-metadata/)
+  # about how you can add JUnit XML output for your testing projects.
   #
   # @example Parse the XML file, and let the plugin do your reporting
   #
