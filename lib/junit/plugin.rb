@@ -137,7 +137,7 @@ module Danger
 
     def auto_link(value)
       if File.exist?(value) && defined?(@dangerfile.github)
-        github.html_link value
+        github.html_link(value, full_path: false)
       else
         value
       end

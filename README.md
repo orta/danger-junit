@@ -1,6 +1,8 @@
 # danger-junit
 
-A description of danger-junit.
+This Danger Plugin allows you to standardise the output for all of your testing runs. Most test runners include an ability to have a reporter that conforms to the JUnit XML standard. This plugin will understand that file and offer a way to introspect it, and to report on it.
+
+![](img/example.png)
 
 ## Installation
 
@@ -8,7 +10,36 @@ A description of danger-junit.
 
 ## Usage
 
+### Ruby
 
+For Rspec, add the gem `rspec_junit_formatter` to your project. Then use a `.rspec` file to configure your tests to have multiple reporters. This file looks like:
+
+``` sh
+...
+--format documentation
+--format RspecJunitFormatter --out junit-results.xml
+...
+```
+
+Then you can pass the `junit-results.xml` file to the plugin in your `Dangerfile`.
+
+### JS
+
+In a Jasmine, or Jest testing project, you want to install the module `jasmine-reporters`. Then as you are setting up your Jasmine runner, [add the following](https://github.com/larrymyers/jasmine-reporters#basic-usage):
+
+```
+var junitReporter = new jasmineReporters.JUnitXmlReporter({
+    savePath: 'junit-results.xml',
+    consolidateAll: false
+});
+jasmine.getEnv().addReporter(junitReporter);
+```
+
+Then you can pass the `junit-results.xml` file to the plugin in your `Dangerfile`.
+
+### iOS
+
+Both [xcpretty](https://github.com/supermarin/xcpretty#reporters) and [XCTool](https://github.com/facebook/xctool#included-reporters) include reporters for creating a JUnit XML file. As Fastlane's [scan](https://github.com/fastlane/fastlane/tree/master/scan) uses xcpretty, it also has support for the file.
 
 ### junit
 
