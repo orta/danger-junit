@@ -74,7 +74,7 @@ module Danger
     attr_accessor :show_skipped_tests
 
     # An array of symbols that become the columns of your tests,
-    # if `nil`, the default, it will be all of the attribues.
+    # if `nil`, the default, it will be all of the attributes.
     #
     # @return   [Array<Symbol>]
     attr_accessor :headers
