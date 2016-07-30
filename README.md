@@ -89,19 +89,19 @@ message "#{slowest_test[:time]} took #{slowest_test[:time]} seconds"</pre>
 
 
 #### Attributes
-<tr>
+
 `tests` - All the tests for introspection
-<tr>
+
 `passes` - An array of XML elements that represent passed tests.
-<tr>
+
 `failures` - An array of XML elements that represent failed tests.
-<tr>
+
 `errors` - An array of XML elements that represent passed tests.
-<tr>
+
 `skipped` - An array of XML elements that represent skipped tests.
-<tr>
+
 `show_skipped_tests` - An attribute to make the plugin show a warning on skipped tests.
-<tr>
+
 `headers` - An array of symbols that become the columns of your tests,
 if `nil`, the default, it will be all of the attribues.
 
