@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    danger-junit (0.5.0)
+    danger-junit (0.6.0)
       danger (~> 2.0)
       ox (~> 2.0)
 

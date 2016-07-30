@@ -40,9 +40,26 @@ junit.show_skipped_tests = true
 junit.report</pre>
 </blockquote>
 
+<blockquote>Only show specific parts of your results
+  <pre>
+junit.parse "/path/to/output.xml"
+junit.headers = [:name, :file]
+junit.report</pre>
+</blockquote>
+
+<blockquote>Only show specific parts of your results
+  <pre>
+junit.parse "/path/to/output.xml"
+all_test = junit.tests.map(&:attributes)
+slowest_test = sort_by { |attributes| attributes[:time].to_f }.last
+message "#{slowest_test[:time]} took #{slowest_test[:time]} seconds"</pre>
+</blockquote>
+
 
 
 #### Attributes
+<tr>
+`tests` - All the tests for introspection
 <tr>
 `passes` - An array of XML elements that represent passed tests.
 <tr>
@@ -53,6 +70,9 @@ junit.report</pre>
 `skipped` - An array of XML elements that represent skipped tests.
 <tr>
 `show_skipped_tests` - An attribute to make the plugin show a warning on skipped tests.
+<tr>
+`headers` - An array of symbols that become the columns of your tests,
+if `nil`, the default, it will be all of the attribues.
 
 
 
