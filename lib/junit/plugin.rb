@@ -6,7 +6,8 @@ module Danger
   # XCTest and more - can all use the same Danger error reporting. Perfect.
   #
   # You can see some examples on [this page from Circle CI](https://circleci.com/docs/test-metadata/)
-  # about how you can add JUnit XML output for your testing projects.
+  # and on this [project's README](https://github.com/orta/danger-junit.git) about how you
+  # can add JUnit XML output for your testing projects.
   #
   # @example Parse the XML file, and let the plugin do your reporting
   #
@@ -96,9 +97,7 @@ module Danger
       failed_tests = failed_suites.map(&:nodes).flatten.select { |node| node.value == 'testcase' }
 
       @failures = failed_tests.select { |test| test.nodes.count > 0 }.select { |test| test.nodes.first.value == 'failure' }
-
       @errors = failed_tests.select { |test| test.nodes.count > 0 }.select { |test| test.nodes.first.value == 'error' }
-
       @skipped = tests.select { |test| test.nodes.count > 0 }.select { |test| test.nodes.first.value == 'skipped' }
 
       @passes = tests - @failures - @errors - @skipped
