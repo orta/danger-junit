@@ -1,42 +1,62 @@
 require File.expand_path('../spec_helper', __FILE__)
 
+#
 module Danger
   describe Danger::DangerJunit do
     it 'should be a plugin' do
       expect(Danger::DangerJunit.new(nil)).to be_a Danger::Plugin
     end
 
-    #
-    # You should test your custom attributes and methods here
-    #
     describe 'with Dangerfile' do
       before do
         @dangerfile = testing_dangerfile
-        @my_plugin = @dangerfile.my_plugin
+        @junit = @dangerfile.junit
       end
 
-      # Some examples for writing tests
-      # You should replace these with your own.
+      it 'gets the right results for the eigen failure' do
+        @junit.parse 'spec/fixtures/eigen_fail.xml'
 
-      it "Warns on a monday" do
-        monday_date = Date.parse("2016-07-11")
-        allow(Date).to receive(:today).and_return monday_date
-
-        @my_plugin.warn_on_mondays
-
-        expect(@dangerfile.status_report[:warnings]).to eq(["Trying to merge code on a Monday"])
+        expect(@junit.failures.count).to eq 2
+        expect(@junit.passes.count).to eq 1109
+        expect(@junit.errors.count).to eq 0
+        expect(@junit.skipped.count).to eq 0
       end
 
-      it "Does nothing on a tuesday" do
-        monday_date = Date.parse("2016-07-12")
-        allow(Date).to receive(:today).and_return monday_date
+      it 'gets the right results for the selenium failure' do
+        @junit.parse 'spec/fixtures/selenium.xml'
 
-        @my_plugin.warn_on_mondays
-
-        expect(@dangerfile.status_report[:warnings]).to eq([])
+        expect(@junit.failures.count).to eq 1
+        expect(@junit.passes.count).to eq 0
+        expect(@junit.errors.count).to eq 0
+        expect(@junit.skipped.count).to eq 0
       end
 
+      it 'gets the right results for the danger rspec failure' do
+        @junit.parse 'spec/fixtures/rspec_fail.xml'
+
+        expect(@junit.failures.count).to eq 1
+        expect(@junit.passes.count).to eq 190
+        expect(@junit.errors.count).to eq 0
+        expect(@junit.skipped.count).to eq 7
+      end
+
+      it 'shows a known markdown row' do
+        @junit.parse 'spec/fixtures/rspec_fail.xml'
+        @junit.report
+
+        output = @junit.status_report[:markdowns].first
+        row = '| Danger::CISource::CircleCI validates when circle all env vars are set | ./spec/lib/danger/ci_sources/circle_spec.rb | 0.012097|'
+        expect(output).to include(row)
+      end
+
+      it 'shows a warning for skipped' do
+        @junit.parse 'spec/fixtures/rspec_fail.xml'
+        @junit.show_skipped_tests = true
+        @junit.report
+
+        warnings = @junit.status_report[:warnings].first
+        expect(warnings).to eq('Skipped 7 tests.')
+      end
     end
   end
 end
-
