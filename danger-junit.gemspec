@@ -21,6 +21,9 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'danger', '~> 2.0'
   spec.add_runtime_dependency 'ox', '~> 2.0'
 
+  # So we can run our specs with junit
+  spec.add_development_dependency "rspec_junit_formatter", "~> 0.2"
+
   # General ruby development
   spec.add_development_dependency 'bundler', '~> 1.3'
   spec.add_development_dependency 'rake', '~> 10.0'

@@ -24,10 +24,30 @@ module Danger
   #          junit.show_skipped_tests = true
   #          junit.report
   #
+  # @example Only show specific parts of your results
+  #
+  #          junit.parse "/path/to/output.xml"
+  #          junit.headers = [:name, :file]
+  #          junit.report
+  #
+  # @example Only show specific parts of your results
+  #
+  #          junit.parse "/path/to/output.xml"
+  #          all_test = junit.tests.map(&:attributes)
+  #          slowest_test = sort_by { |attributes| attributes[:time].to_f }.last
+  #          message "#{slowest_test[:time]} took #{slowest_test[:time]} seconds"
+  #
+  #
   # @see  orta/danger-junit, danger/danger, artsy/eigen
   # @tags testing, reporting, junit, rspec, jasmine, jest, xcpretty
   #
   class DangerJunit < Plugin
+
+    # All the tests for introspection
+    #
+    # @return   [Array<Ox::Element>]
+    attr_accessor :tests
+
     # An array of XML elements that represent passed tests.
     #
     # @return   [Array<Ox::Element>]
@@ -53,6 +73,12 @@ module Danger
     # @return   [Bool]
     attr_accessor :show_skipped_tests
 
+    # An array of symbols that become the columns of your tests,
+    # if `nil`, the default, it will be all of the attribues.
+    #
+    # @return   [Array<Symbol>]
+    attr_accessor :headers
+
     # Parses an XML file, which fills all the attributes
     # will `raise` for errors
     # @return   [void]
@@ -64,7 +90,7 @@ module Danger
       @doc = Ox.parse xml_string
 
       suite_root = @doc.nodes.first.value == 'testsuites' ? @doc.nodes.first : @doc
-      tests = suite_root.nodes.map(&:nodes).flatten.select { |node| node.value == 'testcase' }
+      @tests = suite_root.nodes.map(&:nodes).flatten.select { |node| node.value == 'testcase' }
 
       failed_suites = suite_root.nodes.select { |suite| suite[:failures].to_i > 0 || suite[:errors].to_i > 0 }
       failed_tests = failed_suites.map(&:nodes).flatten.select { |node| node.value == 'testcase' }
@@ -90,18 +116,30 @@ module Danger
         message = "### Tests: \n\n"
 
         tests = (failures + errors)
-        keys = tests.first.attributes.keys
+        keys = headers || tests.first.attributes.keys
         attributes = keys.map(&:to_s).map(&:capitalize)
 
-        # Create the header
+        # Create the headers
         message << attributes.join(' | ') + "|\n"
         message << attributes.map { |_| '---' }.join(' | ') + "|\n"
 
+        # Map out the keys to the tests
         tests.each do |test|
-          message << test.attributes.values.join(' | ') + "|\n"
+          row_values = keys.map { |key| test.attributes[key] }.map { |v| auto_link(v) }
+          message << row_values.join(' | ') + "|\n"
         end
 
         markdown message
+      end
+    end
+
+    private
+
+    def auto_link(value)
+      if File.exist?(value) && defined?(@dangerfile.github)
+        github.html_link value
+      else
+        value
       end
     end
   end
