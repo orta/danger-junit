@@ -108,6 +108,7 @@ module Danger
     #
     # @return   [void]
     def report
+      return if failures.nil? # because danger calls `report` before loading a file
       warn("Skipped #{skipped.count} tests.") if show_skipped_tests && skipped.count > 0
 
       unless failures.empty? && errors.empty?
