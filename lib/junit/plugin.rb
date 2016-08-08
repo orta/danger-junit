@@ -39,7 +39,9 @@ module Danger
   #          message "#{slowest_test[:time]} took #{slowest_test[:time]} seconds"
   #
   #
-  # @see  orta/danger-junit, danger/danger, artsy/eigen
+  # @see  orta/danger-junit
+  # @see  danger/danger
+  # @see  artsy/eigen
   # @tags testing, reporting, junit, rspec, jasmine, jest, xcpretty
   #
   class DangerJunit < Plugin
