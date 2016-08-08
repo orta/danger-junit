@@ -80,7 +80,7 @@ module Danger
     # @return   [Array<Symbol>]
     attr_accessor :headers
 
-    # Parses an XML file, which fills all the attributes
+    # Parses an XML file, which fills all the attributes,
     # will `raise` for errors
     # @return   [void]
     def parse(file)
