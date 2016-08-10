@@ -27,7 +27,7 @@ Then you can pass the `junit-results.xml` file to the plugin in your `Dangerfile
 
 In a Jasmine, or Jest testing project, you want to install the module `jasmine-reporters`. Then as you are setting up your Jasmine runner, [add the following](https://github.com/larrymyers/jasmine-reporters#basic-usage):
 
-```
+```javascript
 var junitReporter = new jasmineReporters.JUnitXmlReporter({
     savePath: 'junit-results.xml',
     consolidateAll: false
@@ -42,10 +42,10 @@ Then you can pass the `junit-results.xml` file to the plugin in your `Dangerfile
 You have a lot of options:
 
 * [trainer](https://github.com/krausefx/trainer) is the fastest way to generate the junit file.
-* [xcpretty](https://github.com/supermarin/xcpretty#reporters)  is used in both Fastlane, and a lot of standard setups.
-* [XCTool](https://github.com/facebook/xctool#included-reporters) includes it's own reporter for creating the file. 
+* [xcpretty](https://github.com/supermarin/xcpretty#reporters)  is used in both [fastlane](https://fastlane.tools), and a lot of standard setups.
+* [xctool](https://github.com/facebook/xctool#included-reporters) includes it's own reporter for creating the file. 
 
-### junit
+### JUnit
 
 Report, or inspect any JUnit XML formatted test suite report.
 
