@@ -49,7 +49,7 @@ module Danger
         expect(output).to include(row)
       end
 
-       it 'shows a known markdown row' do
+      it 'shows a known markdown row' do
         @junit.parse 'spec/fixtures/rspec_fail.xml'
         @junit.headers = [:time]
         @junit.report
@@ -69,10 +69,8 @@ module Danger
       end
 
       it 'links paths that are files' do
-        allow(@dangerfile.github).to receive(:pr_json).and_return({
-          head: { repo: { html_url: 'https://github.com/thing/thingy' } }
-        })
-        allow(@dangerfile.github).to receive(:head_commit).and_return("hello")
+        allow(@dangerfile.github).to receive(:pr_json).and_return(head: { repo: { html_url: 'https://github.com/thing/thingy' } })
+        allow(@dangerfile.github).to receive(:head_commit).and_return('hello')
 
         @junit.parse 'spec/fixtures/danger-junit-fail.xml'
         @junit.report
