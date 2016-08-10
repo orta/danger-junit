@@ -39,7 +39,11 @@ Then you can pass the `junit-results.xml` file to the plugin in your `Dangerfile
 
 ### iOS
 
-Both [xcpretty](https://github.com/supermarin/xcpretty#reporters) and [XCTool](https://github.com/facebook/xctool#included-reporters) include reporters for creating a JUnit XML file. As Fastlane's [scan](https://github.com/fastlane/fastlane/tree/master/scan) uses xcpretty, it also has support for the file.
+You have a lot of options:
+
+* [trainer](https://github.com/krausefx/trainer) is the fastest way to generate the junit file.
+* [xcpretty](https://github.com/supermarin/xcpretty#reporters)  is used in both Fastlane, and a lot of standard setups.
+* [XCTool](https://github.com/facebook/xctool#included-reporters) includes it's own reporter for creating the file. 
 
 ### junit
 
