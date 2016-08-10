@@ -1,6 +1,5 @@
 require File.expand_path('../spec_helper', __FILE__)
 
-#
 module Danger
   describe Danger::DangerJunit do
     it 'should be a plugin' do
@@ -75,19 +74,6 @@ module Danger
 
         warnings = @junit.status_report[:warnings].first
         expect(warnings).to eq('Skipped 7 tests.')
-      end
-
-      it 'links paths that are files' do
-        allow(@dangerfile.github).to receive(:pr_json).and_return({
-          head: { repo: { html_url: 'https://github.com/thing/thingy' } }
-        })
-        allow(@dangerfile.github).to receive(:head_commit).and_return("hello")
-
-        @junit.parse 'spec/fixtures/danger-junit-fail.xml'
-        @junit.report
-
-        outputs = @junit.status_report[:markdowns].first
-        expect(outputs).to include('github.com/thing/thingy')
       end
     end
   end
