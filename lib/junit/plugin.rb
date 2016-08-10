@@ -45,7 +45,6 @@ module Danger
   # @tags testing, reporting, junit, rspec, jasmine, jest, xcpretty
   #
   class DangerJunit < Plugin
-
     # All the tests for introspection
     #
     # @return   [Array<Ox::Element>]
@@ -131,7 +130,7 @@ module Danger
       warn("Skipped #{skipped.count} tests.") if show_skipped_tests && skipped.count > 0
 
       unless failures.empty? && errors.empty?
-        fail("Tests have failed, see below for more information.", sticky: false)
+        fail('Tests have failed, see below for more information.', sticky: false)
         message = "### Tests: \n\n"
 
         tests = (failures + errors)

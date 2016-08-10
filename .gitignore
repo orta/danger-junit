@@ -1,4 +1,4 @@
 .DS_Store
 pkg
 .idea/
-danger-junit-fail.xml
+/danger-junit-fail.xml
