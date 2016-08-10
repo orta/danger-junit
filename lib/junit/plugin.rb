@@ -89,8 +89,8 @@ module Danger
       require 'ox'
       raise "No Junit file was found at #{file}" unless File.exist? file
 
-      xml_string = File.read file
-      @doc = Ox.parse xml_string
+      xml_string = File.read(file)
+      @doc = Ox.parse(xml_string)
 
       suite_root = @doc.nodes.first.value == 'testsuites' ? @doc.nodes.first : @doc
       @tests = suite_root.nodes.map(&:nodes).flatten.select { |node| node.value == 'testcase' }
@@ -98,9 +98,26 @@ module Danger
       failed_suites = suite_root.nodes.select { |suite| suite[:failures].to_i > 0 || suite[:errors].to_i > 0 }
       failed_tests = failed_suites.map(&:nodes).flatten.select { |node| node.value == 'testcase' }
 
-      @failures = failed_tests.select { |test| test.nodes.count > 0 }.select { |test| test.nodes.first.value == 'failure' }
-      @errors = failed_tests.select { |test| test.nodes.count > 0 }.select { |test| test.nodes.first.value == 'error' }
-      @skipped = tests.select { |test| test.nodes.count > 0 }.select { |test| test.nodes.first.value == 'skipped' }
+      @failures = failed_tests.select do |test| 
+        test.nodes.count > 0
+      end.select do |test|
+        node = test.nodes.first
+        node.kind_of?(Ox::Element) && node.value == 'failure'
+      end
+
+      @errors = failed_tests.select do |test| 
+        test.nodes.count > 0
+      end.select do |test| 
+        node = test.nodes.first
+        node.kind_of?(Ox::Element) && node.value == 'error'
+      end
+
+      @skipped = tests.select do |test| 
+        test.nodes.count > 0
+      end.select do |test| 
+        node = test.nodes.first
+        node.kind_of?(Ox::Element) && node.value == 'skipped'
+      end
 
       @passes = tests - @failures - @errors - @skipped
     end
