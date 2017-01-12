@@ -17,7 +17,7 @@ module Danger
   # @example Let the plugin parse the XML file, and report yourself
   #
   #          junit.parse "/path/to/output.xml"
-  #          fail("Tests failed") unless junit.fails.empty?
+  #          fail("Tests failed") unless junit.failures.empty?
   #
   # @example Warn on a report about skipped tests
   #
