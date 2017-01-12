@@ -43,7 +43,7 @@ You have a lot of options:
 
 * [trainer](https://github.com/krausefx/trainer) is the fastest way to generate the junit file.
 * [xcpretty](https://github.com/supermarin/xcpretty#reporters)  is used in both [fastlane](https://fastlane.tools), and a lot of standard setups.
-* [xctool](https://github.com/facebook/xctool#included-reporters) includes it's own reporter for creating the file. 
+* [xctool](https://github.com/facebook/xctool#included-reporters) includes it's own reporter for creating the file.
 
 ### JUnit
 
@@ -53,7 +53,7 @@ Testing frameworks have standardized on the JUnit XML format for
 reporting results, this means that projects using Rspec, Jasmine, Mocha,
 XCTest and more - can all use the same Danger error reporting. Perfect.
 
-You can see some examples on [this page from Circle CI](https://circleci.com/docs/test-metadata/)
+You can see some examples on [this page from Circle CI](https://circleci.com/docs/test-metadata/) and on this [project's README](https://github.com/orta/danger-junit.git)
 about how you can add JUnit XML output for your testing projects.
 
 <blockquote>Parse the XML file, and let the plugin do your reporting
@@ -65,7 +65,7 @@ junit.report</pre>
 <blockquote>Let the plugin parse the XML file, and report yourself
   <pre>
 junit.parse "/path/to/output.xml"
-fail("Tests failed") unless junit.fails.empty?</pre>
+fail("Tests failed") unless junit.failures.empty?</pre>
 </blockquote>
 
 <blockquote>Warn on a report about skipped tests
@@ -107,13 +107,13 @@ message "#{slowest_test[:time]} took #{slowest_test[:time]} seconds"</pre>
 `show_skipped_tests` - An attribute to make the plugin show a warning on skipped tests.
 
 `headers` - An array of symbols that become the columns of your tests,
-if `nil`, the default, it will be all of the attribues.
+if `nil`, the default, it will be all of the attributes.
 
 
 
 #### Methods
 
-`parse` - Parses an XML file, which fills all the attributes
+`parse` - Parses an XML file, which fills all the attributes,
 will `raise` for errors
 
 `report` - Causes a build fail if there are test failures,
