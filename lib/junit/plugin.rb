@@ -92,10 +92,10 @@ module Danger
       @doc = Ox.parse(xml_string)
 
       suite_root = @doc.nodes.first.value == 'testsuites' ? @doc.nodes.first : @doc
-      @tests = suite_root.nodes.map(&:nodes).flatten.select { |node| node.value == 'testcase' }
+      @tests = suite_root.nodes.map(&:nodes).flatten.select { |node| node.kind_of?(Ox::Element) && node.value == 'testcase' }
 
       failed_suites = suite_root.nodes.select { |suite| suite[:failures].to_i > 0 || suite[:errors].to_i > 0 }
-      failed_tests = failed_suites.map(&:nodes).flatten.select { |node| node.value == 'testcase' }
+      failed_tests = failed_suites.map(&:nodes).flatten.select { |node| node.kind_of?(Ox::Element) && node.value == 'testcase' }
 
       @failures = failed_tests.select do |test| 
         test.nodes.count > 0
