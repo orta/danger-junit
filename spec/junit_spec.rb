@@ -55,7 +55,7 @@ module Danger
 
         output = @junit.status_report[:markdowns].first
         row = '| Danger::CISource::CircleCI validates when circle all env vars are set | ./spec/lib/danger/ci_sources/circle_spec.rb | 0.012097|'
-        expect(output).to include(row)
+        expect(output.to_s).to include(row)
       end
 
       it 'shows a known markdown row' do
@@ -65,7 +65,7 @@ module Danger
 
         output = @junit.status_report[:markdowns].first
         row = "Time|\n"
-        expect(output).to include(row)
+        expect(output.to_s).to include(row)
       end
 
       it 'shows a warning for skipped' do
@@ -78,14 +78,14 @@ module Danger
       end
 
       it 'links paths that are files' do
-        allow(@dangerfile.github).to receive(:pr_json).and_return(head: { repo: { html_url: 'https://github.com/thing/thingy' } })
+        allow(@dangerfile.github).to receive(:pr_json).and_return('head' => { 'repo' => { 'html_url' => 'https://github.com/thing/thingy' } })
         allow(@dangerfile.github).to receive(:head_commit).and_return('hello')
 
         @junit.parse 'spec/fixtures/danger-junit-fail.xml'
         @junit.report
 
         outputs = @junit.status_report[:markdowns].first
-        expect(outputs).to include('github.com/thing/thingy')
+        expect(outputs.to_s).to include('github.com/thing/thingy')
       end
     end
   end
