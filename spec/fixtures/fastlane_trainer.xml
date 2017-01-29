@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites tests="2" failures="1">
+    <testsuite name="EmptyTests" tests="0" failures="0">
+    </testsuite>
     <testsuite name="ThemojiUITests" tests="2" failures="1">
         <testcase classname="ThemojiUITests" name="testExample()">
         </testcase>
