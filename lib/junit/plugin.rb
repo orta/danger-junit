@@ -86,7 +86,7 @@ module Danger
     # @return   [void]
     def parse(file)
       require 'ox'
-      raise "No Junit file was found at #{file}" unless File.exist? file
+      raise "No JUnit file was found at #{file}" unless File.exist? file
 
       xml_string = File.read(file)
       @doc = Ox.parse(xml_string)
