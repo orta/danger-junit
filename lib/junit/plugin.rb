@@ -134,6 +134,14 @@ module Danger
         message = "### Tests: \n\n"
 
         tests = (failures + errors)
+
+        # check the provided headers are available
+        unless headers.nil?
+          attributtesKey = tests.first.attributes.keys
+          not_available_headers = headers.select { |header| not attributtesKey.include?(header) }
+          raise "Some of headers provided aren't available in the JUnit report (#{not_available_headers})" unless not_available_headers.empty?
+        end
+
         keys = headers || tests.first.attributes.keys
         attributes = keys.map(&:to_s).map(&:capitalize)
 
