@@ -85,17 +85,29 @@ module Danger
     # will `raise` for errors
     # @return   [void]
     def parse(file)
+      parse_files(file)
+    end
+
+    # Parses multiple XML files, which fills all the attributes,
+    # will `raise` for errors
+    # @return   [void]
+    def parse_files(*files)
       require 'ox'
-      raise "No JUnit file was found at #{file}" unless File.exist? file
+      @tests = []
+      failed_tests = []
 
-      xml_string = File.read(file)
-      @doc = Ox.parse(xml_string)
+      Array(files).each do |file|
+        raise "No JUnit file was found at #{file}" unless File.exist? file
 
-      suite_root = @doc.nodes.first.value == 'testsuites' ? @doc.nodes.first : @doc
-      @tests = suite_root.nodes.map(&:nodes).flatten.select { |node| node.kind_of?(Ox::Element) && node.value == 'testcase' }
+        xml_string = File.read(file)
+        doc = Ox.parse(xml_string)
 
-      failed_suites = suite_root.nodes.select { |suite| suite[:failures].to_i > 0 || suite[:errors].to_i > 0 }
-      failed_tests = failed_suites.map(&:nodes).flatten.select { |node| node.kind_of?(Ox::Element) && node.value == 'testcase' }
+        suite_root = doc.nodes.first.value == 'testsuites' ? doc.nodes.first : doc
+        @tests += suite_root.nodes.map(&:nodes).flatten.select { |node| node.kind_of?(Ox::Element) && node.value == 'testcase' }
+
+        failed_suites = suite_root.nodes.select { |suite| suite[:failures].to_i > 0 || suite[:errors].to_i > 0 }
+        failed_tests += failed_suites.map(&:nodes).flatten.select { |node| node.kind_of?(Ox::Element) && node.value == 'testcase' }
+      end
 
       @failures = failed_tests.select do |test| 
         test.nodes.count > 0

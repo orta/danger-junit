@@ -49,6 +49,15 @@ module Danger
         expect(@junit.skipped.count).to eq 7
       end
 
+      it 'gets the right results for multiple files' do
+        @junit.parse_files 'spec/fixtures/rspec_fail.xml', 'spec/fixtures/fastlane_trainer.xml'
+
+        expect(@junit.failures.count).to eq 1 + 1
+        expect(@junit.passes.count).to eq 190 + 1
+        expect(@junit.errors.count).to eq 0 + 0
+        expect(@junit.skipped.count).to eq 7 + 0
+      end
+
       it 'shows a known markdown row' do
         @junit.parse 'spec/fixtures/rspec_fail.xml'
         @junit.report
