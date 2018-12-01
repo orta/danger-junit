@@ -14,6 +14,16 @@ module Danger
   #          junit.parse "/path/to/output.xml"
   #          junit.report
   #
+  # @example Parse multiple XML files by passing multiple file names
+  #
+  #          junit.parse_files "/path/to/integration-tests.xml", "/path/to/unit-tests.xml"
+  #          junit.report
+  #
+  # @example Parse multiple XML files by passing an array
+  #          result_files = %w(/path/to/integration-tests.xml /path/to/unit-tests.xml)
+  #          junit.parse_files result_files
+  #          junit.report
+  #
   # @example Let the plugin parse the XML file, and report yourself
   #
   #          junit.parse "/path/to/output.xml"
@@ -97,7 +107,7 @@ module Danger
       @tests = []
       failed_tests = []
 
-      Array(files).each do |file|
+      Array(files).flatten.each do |file|
         raise "No JUnit file was found at #{file}" unless File.exist? file
 
         xml_string = File.read(file)

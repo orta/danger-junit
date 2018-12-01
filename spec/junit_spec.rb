@@ -98,6 +98,16 @@ module Danger
           expect(@junit.skipped.count).to eq 7 + 0
         end
 
+        it 'gets the right results for an array of files' do
+          files = %w(spec/fixtures/rspec_fail.xml spec/fixtures/fastlane_trainer.xml)
+          @junit.parse_files files
+
+          expect(@junit.failures.count).to eq 1 + 1
+          expect(@junit.passes.count).to eq 190 + 1
+          expect(@junit.errors.count).to eq 0 + 0
+          expect(@junit.skipped.count).to eq 7 + 0
+        end
+
         it 'defaults to reporting common attributes for multiple files' do
           @junit.parse_files 'spec/fixtures/rspec_fail.xml', 'spec/fixtures/eigen_fail.xml'
 
