@@ -76,7 +76,8 @@ module Danger
     attr_accessor :show_skipped_tests
 
     # An array of symbols that become the columns of your tests,
-    # if `nil`, the default, it will be all of the attributes.
+    # if `nil`, the default, it will be all of the attributes for a single parse
+    # or all of the common attributes between multiple files
     #
     # @return   [Array<Symbol>]
     attr_accessor :headers
@@ -147,14 +148,15 @@ module Danger
 
         tests = (failures + errors)
 
+        common_attributes = tests.map{|test| test.attributes.keys }.inject(&:&)
+
         # check the provided headers are available
         unless headers.nil?
-          attributtesKey = tests.first.attributes.keys
-          not_available_headers = headers.select { |header| not attributtesKey.include?(header) }
+          not_available_headers = headers.select { |header| not common_attributes.include?(header) }
           raise "Some of headers provided aren't available in the JUnit report (#{not_available_headers})" unless not_available_headers.empty?
         end
 
-        keys = headers || tests.first.attributes.keys
+        keys = headers || common_attributes
         attributes = keys.map(&:to_s).map(&:capitalize)
 
         # Create the headers
