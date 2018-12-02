@@ -1,3 +1,3 @@
 module Junit
-  VERSION = '0.7.4'.freeze
+  VERSION = '1.0.0'.freeze
 end
