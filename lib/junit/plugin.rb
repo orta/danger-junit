@@ -14,6 +14,16 @@ module Danger
   #          junit.parse "/path/to/output.xml"
   #          junit.report
   #
+  # @example Parse multiple XML files by passing multiple file names
+  #
+  #          junit.parse_files "/path/to/integration-tests.xml", "/path/to/unit-tests.xml"
+  #          junit.report
+  #
+  # @example Parse multiple XML files by passing an array
+  #          result_files = %w(/path/to/integration-tests.xml /path/to/unit-tests.xml)
+  #          junit.parse_files result_files
+  #          junit.report
+  #
   # @example Let the plugin parse the XML file, and report yourself
   #
   #          junit.parse "/path/to/output.xml"
@@ -76,7 +86,8 @@ module Danger
     attr_accessor :show_skipped_tests
 
     # An array of symbols that become the columns of your tests,
-    # if `nil`, the default, it will be all of the attributes.
+    # if `nil`, the default, it will be all of the attributes for a single parse
+    # or all of the common attributes between multiple files
     #
     # @return   [Array<Symbol>]
     attr_accessor :headers
@@ -85,17 +96,29 @@ module Danger
     # will `raise` for errors
     # @return   [void]
     def parse(file)
+      parse_files(file)
+    end
+
+    # Parses multiple XML files, which fills all the attributes,
+    # will `raise` for errors
+    # @return   [void]
+    def parse_files(*files)
       require 'ox'
-      raise "No JUnit file was found at #{file}" unless File.exist? file
+      @tests = []
+      failed_tests = []
 
-      xml_string = File.read(file)
-      @doc = Ox.parse(xml_string)
+      Array(files).flatten.each do |file|
+        raise "No JUnit file was found at #{file}" unless File.exist? file
 
-      suite_root = @doc.nodes.first.value == 'testsuites' ? @doc.nodes.first : @doc
-      @tests = suite_root.nodes.map(&:nodes).flatten.select { |node| node.kind_of?(Ox::Element) && node.value == 'testcase' }
+        xml_string = File.read(file)
+        doc = Ox.parse(xml_string)
 
-      failed_suites = suite_root.nodes.select { |suite| suite[:failures].to_i > 0 || suite[:errors].to_i > 0 }
-      failed_tests = failed_suites.map(&:nodes).flatten.select { |node| node.kind_of?(Ox::Element) && node.value == 'testcase' }
+        suite_root = doc.nodes.first.value == 'testsuites' ? doc.nodes.first : doc
+        @tests += suite_root.nodes.map(&:nodes).flatten.select { |node| node.kind_of?(Ox::Element) && node.value == 'testcase' }
+
+        failed_suites = suite_root.nodes.select { |suite| suite[:failures].to_i > 0 || suite[:errors].to_i > 0 }
+        failed_tests += failed_suites.map(&:nodes).flatten.select { |node| node.kind_of?(Ox::Element) && node.value == 'testcase' }
+      end
 
       @failures = failed_tests.select do |test| 
         test.nodes.count > 0
@@ -135,14 +158,15 @@ module Danger
 
         tests = (failures + errors)
 
+        common_attributes = tests.map{|test| test.attributes.keys }.inject(&:&)
+
         # check the provided headers are available
         unless headers.nil?
-          attributtesKey = tests.first.attributes.keys
-          not_available_headers = headers.select { |header| not attributtesKey.include?(header) }
+          not_available_headers = headers.select { |header| not common_attributes.include?(header) }
           raise "Some of headers provided aren't available in the JUnit report (#{not_available_headers})" unless not_available_headers.empty?
         end
 
-        keys = headers || tests.first.attributes.keys
+        keys = headers || common_attributes
         attributes = keys.map(&:to_s).map(&:capitalize)
 
         # Create the headers
