@@ -92,6 +92,13 @@ module Danger
     # @return   [Array<Symbol>]
     attr_accessor :headers
 
+    # An array of symbols that become the columns of your skipped tests,
+    # if `nil`, the default, it will be all of the attributes for a single parse
+    # or all of the common attributes between multiple files
+    #
+    # @return   [Array<Symbol>]
+    attr_accessor :skipped_headers
+
     # Parses an XML file, which fills all the attributes,
     # will `raise` for errors
     # @return   [void]
@@ -120,7 +127,7 @@ module Danger
         failed_tests += failed_suites.map(&:nodes).flatten.select { |node| node.kind_of?(Ox::Element) && node.value == 'testcase' }
       end
 
-      @failures = failed_tests.select do |test| 
+      @failures = failed_tests.select do |test|
         test.nodes.count > 0
       end.select do |test|
         node = test.nodes.first
@@ -150,40 +157,51 @@ module Danger
     # @return   [void]
     def report
       return if failures.nil? # because danger calls `report` before loading a file
-      warn("Skipped #{skipped.count} tests.") if show_skipped_tests && skipped.count > 0
+      if show_skipped_tests && skipped.count > 0
+        warn("Skipped #{skipped.count} tests.")
+
+        message = "### Skipped: \n\n"
+        message << get_report_content(skipped, skipped_headers)
+        markdown message
+
+      end
 
       unless failures.empty? && errors.empty?
         fail('Tests have failed, see below for more information.', sticky: false)
+
         message = "### Tests: \n\n"
-
         tests = (failures + errors)
-
-        common_attributes = tests.map{|test| test.attributes.keys }.inject(&:&)
-
-        # check the provided headers are available
-        unless headers.nil?
-          not_available_headers = headers.select { |header| not common_attributes.include?(header) }
-          raise "Some of headers provided aren't available in the JUnit report (#{not_available_headers})" unless not_available_headers.empty?
-        end
-
-        keys = headers || common_attributes
-        attributes = keys.map(&:to_s).map(&:capitalize)
-
-        # Create the headers
-        message << attributes.join(' | ') + "|\n"
-        message << attributes.map { |_| '---' }.join(' | ') + "|\n"
-
-        # Map out the keys to the tests
-        tests.each do |test|
-          row_values = keys.map { |key| test.attributes[key] }.map { |v| auto_link(v) }
-          message << row_values.join(' | ') + "|\n"
-        end
-
+        message << get_report_content(tests, header)
         markdown message
       end
     end
 
     private
+
+    def get_report_content(tests, headers)
+      message = ''
+      common_attributes = tests.map{|test| test.attributes.keys }.inject(&:&)
+
+      # check the provided headers are available
+      unless headers.nil?
+        not_available_headers = headers.select { |header| not common_attributes.include?(header) }
+        raise "Some of headers provided aren't available in the JUnit report (#{not_available_headers})" unless not_available_headers.empty?
+      end
+
+      keys = headers || common_attributes
+      attributes = keys.map(&:to_s).map(&:capitalize)
+
+      # Create the headers
+      message << attributes.join(' | ') + "|\n"
+      message << attributes.map { |_| '---' }.join(' | ') + "|\n"
+
+      # Map out the keys to the tests
+      tests.each do |test|
+        row_values = keys.map { |key| test.attributes[key] }.map { |v| auto_link(v) }
+        message << row_values.join(' | ') + "|\n"
+      end
+      message
+    end
 
     def auto_link(value)
       if File.exist?(value) && defined?(@dangerfile.github)
