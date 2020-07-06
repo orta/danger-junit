@@ -72,6 +72,7 @@ fail("Tests failed") unless junit.failures.empty?</pre>
   <pre>
 junit.parse "/path/to/output.xml"
 junit.show_skipped_tests = true
+junit.skipped_headers = [:name, :file]
 junit.report</pre>
 </blockquote>
 
@@ -108,6 +109,10 @@ message "#{slowest_test[:time]} took #{slowest_test[:time]} seconds"</pre>
 
 `headers` - An array of symbols that become the columns of your tests,
 if `nil`, the default, it will be all of the attributes.
+
+`skipped_headers` - An array of symbols that become the columns of your skipped tests, 
+if `nil`, the default, it will be all of the attributes for a single parse 
+or all of the common attributes between multiple files
 
 
 
