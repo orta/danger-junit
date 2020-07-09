@@ -171,7 +171,7 @@ module Danger
 
         message = "### Tests: \n\n"
         tests = (failures + errors)
-        message << get_report_content(tests, header)
+        message << get_report_content(tests, headers)
         markdown message
       end
     end
