@@ -108,6 +108,16 @@ module Danger
           expect(@junit.skipped.count).to eq 7 + 0
         end
 
+        it 'gets the right results for an pattern of files' do
+          files = 'spec/fixtures/*.xml'
+          @junit.parse_pattern files
+
+          expect(@junit.failures.count).to eq 6
+          expect(@junit.passes.count).to eq 1346
+          expect(@junit.errors.count).to eq 0 + 0
+          expect(@junit.skipped.count).to eq 1+ 7 + 0
+        end
+
         it 'defaults to reporting common attributes for multiple files' do
           @junit.parse_files 'spec/fixtures/rspec_fail.xml', 'spec/fixtures/eigen_fail.xml'
 

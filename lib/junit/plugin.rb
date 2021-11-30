@@ -106,6 +106,15 @@ module Danger
       parse_files(file)
     end
 
+    # Load all XML file that match the given pattern
+    # This allow to load all file in a given directory, instead of identifying each file specifically.
+    # will `raise` for errors
+    # @return   [void]
+    def parse_pattern(pattern)
+      files_in_pattern = Dir.glob(pattern)
+      parse_files(files_in_pattern)
+    end
+
     # Parses multiple XML files, which fills all the attributes,
     # will `raise` for errors
     # @return   [void]
